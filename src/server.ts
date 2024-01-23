@@ -1,38 +1,17 @@
-import express, {Express} from 'express'
-import itemRoutes from "./routes/item-routes";
-import {connectToMongoDB} from "./configs/mongodb";
-import dotenv from 'dotenv'
-import path from "path";
-import {Server} from "http";
-dotenv.config()
+import dotenv from 'dotenv';
+import app from "./app";
+import {connectMongoDB} from "./configs/mongodb";
 
-const PORT = 5000
-const app = express()
-let server: Server
+dotenv.config({path: './config.env'});
 
-// json serialize
-app.use(express.json())
-
-// Serve static files from the "public" directory
-// app.use(express.static(path.join(__dirname, 'public')));
-
-
-// routes
-app.get('/', (req, res)=> {
-    res.status(200).json({message: 'Hello Metaroon 2024!'})
-    // res.sendFile(path.join(__dirname, 'public/index.html'));
-})
-app.use('/api/v1/items', itemRoutes)
-
+const PORT = process.env.PORT;
+let DB;
+if(process.env.DATABASE && process.env.PASSWORD) {
+    DB = process.env.DATABASE.replace('<PASSWORD>', process.env.PASSWORD);
+    (async () => connectMongoDB(DB))();
+}
 // Start the express app
-connectToMongoDB('mongodb+srv://stoXmod:5VJbnUadD3lLZPJu@cluster0.avfm1yl.mongodb.net/test?retryWrites=true&w=majority').then(()=> {
-    console.log('✅ Mongodb Connected!')
-    server = app.listen(PORT, ()=> {
-        console.log(`🚀 Server is running on port ${PORT}`)
-    })
-}).catch((ex)=> {
-    console.log('🔴 Connection failed with MongoDB!', ex)
+app.listen(PORT, ()=> {
+    console.log(`🚀 Server is running on port ${PORT}`)
 })
-
-export {app,server}
 
