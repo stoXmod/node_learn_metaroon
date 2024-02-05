@@ -23,7 +23,7 @@ app.use(express.json())
 // const mongoClient = connectMongoDB('mongodb://127.0.0.1:27017/')
 
 //connect Local database(using mongoose)
-mongoose.connect('mongodb://127.0.0.1:27017/').then(()=>{
+mongoose.connect('mongodb://127.0.0.1:27017/metaroon').then(()=>{
     console.log('✅ mongoDB connected')
 }).catch((ex)=>{
     console.log('🛑 Connection Failed with mongoDB',ex)
