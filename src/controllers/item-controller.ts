@@ -30,4 +30,56 @@ export class ItemController {
             res.status(400).json({message: 'Error occurred'})
         }
     }
+    public static async getItemById(req: Request, res: Response) {
+        const itemId = req.params.id;
+
+        try {
+            const item = await ItemsSchemaModel.findById(itemId);
+            if (!item) {
+                return res.status(404).json({ message: 'Item not found' });
+            }
+
+            res.status(200).json({ message: 'Get item by ID successfully', item });
+        } catch (ex) {
+            res.status(400).json({ message: 'Error occurred' });
+        }
+    }
+
+    public static async updateItem(req: Request, res: Response) {
+        const itemId = req.params.id;
+        const { name } = req.body;
+
+        try {
+            const updatedItem = await ItemsSchemaModel.findByIdAndUpdate(
+                itemId,
+                { name },
+                { new: true }
+            );
+
+            if (!updatedItem) {
+                return res.status(404).json({ message: 'Item not found' });
+            }
+
+            res.status(200).json({ message: 'Item updated successfully', updatedItem });
+        } catch (ex) {
+            res.status(400).json({ message: 'Error occurred' });
+        }
+    }
+
+    public static async deleteItem(req: Request, res: Response) {
+        const itemId = req.params.id;
+
+        try {
+            const deletedItem = await ItemsSchemaModel.findByIdAndDelete(itemId);
+
+            if (!deletedItem) {
+                return res.status(404).json({ message: 'Item not found' });
+            }
+
+            res.status(200).json({ message: 'Item deleted successfully', deletedItem });
+        } catch (ex) {
+            res.status(400).json({ message: 'Error occurred' });
+        }
+    }
+
 }
